@@ -17,6 +17,6 @@ Route::prefix('v1')->group(function () {
         'librarians' => LibrarianController::class,
         'categories' => CategoryController::class,
         'members' =>  MemberController::class,
-        'books' => BookController::class
+        'books' => BookController::class,
     ]);
 });
