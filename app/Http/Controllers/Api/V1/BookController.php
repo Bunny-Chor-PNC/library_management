@@ -65,4 +65,9 @@ class BookController extends Controller
         $book->delete();
         return response()->json(['message' => 'Book deleted']);
     }
+
+    public function getDataAllBooks() {
+        $data = Book::with('librarian', 'category', 'member')->get();
+        return response()->json($data, 200);
+    }
 }

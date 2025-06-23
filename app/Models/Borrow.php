@@ -10,7 +10,19 @@ class Borrow extends Model
     use HasFactory;
 
     protected $fillable = ['member_id', 'librarian_id', 'book_id'];
-    protected function books(){
-        return $this->hasMany(Book::class);
+    
+    public function member()
+    {
+        return $this->belongsTo(Member::class);
+    }
+
+    public function librarian()
+    {
+        return $this->belongsTo(Librarian::class);
+    }
+
+    public function book()
+    {
+        return $this->belongsTo(Book::class);
     }
 }

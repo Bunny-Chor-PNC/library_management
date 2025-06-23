@@ -1,49 +1,69 @@
 <?php
 
-namespace App\Http\Controllers;
-
+namespace App\Http\Controllers\Api\V1;
+use App\Http\Controllers\Controller;
 use App\Models\Borrow;
 use Illuminate\Http\Request;
 
 class BorrowController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        return response()->json(Borrow::all(), 200);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'member_id' => 'required|exists:members,id',
+            'librarian_id' => 'required|exists:librarians,id',
+            'book_id' => 'required|exists:books,id',
+        ]);
+
+        $borrow = Borrow::create($validated);
+
+        return response()->json($borrow, 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Borrow $borrow)
+    public function show($id)
     {
-        //
+        $borrow = Borrow::with(['member', 'librarian', 'book'])->find($id);
+        if (!$borrow) {
+            return response()->json(['message' => 'Borrow not found'], 404);
+        }
+        return response()->json($borrow, 200);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Borrow $borrow)
+    public function update(Request $request, $id)
     {
-        //
+        $borrow = Borrow::find($id);
+        if (!$borrow) {
+            return response()->json(['message' => 'Borrow not found'], 404);
+        }
+
+        $validated = $request->validate([
+            'member_id' => 'sometimes|exists:members,id',
+            'librarian_id' => 'sometimes|exists:librarians,id',
+            'book_id' => 'sometimes|exists:books,id',
+        ]);
+
+        $borrow->update($validated);
+        return response()->json($borrow, 200);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Borrow $borrow)
+    public function destroy($id)
     {
-        //
+        $borrow = Borrow::find($id);
+        if (!$borrow) {
+            return response()->json(['message' => 'Borrow not found'], 404);
+        }
+
+        $borrow->delete();
+        return response()->json(['message' => 'Borrow deleted'], 200);
+    }
+
+    public function getDataAllBorrows() {
+        $data = Borrow::with(['librarian', 'member', 'book'])->get();
+        return response()->json($data, 200);
     }
 }
