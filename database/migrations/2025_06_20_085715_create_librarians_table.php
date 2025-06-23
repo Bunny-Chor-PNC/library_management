@@ -17,6 +17,7 @@ return new class extends Migration
             $table->integer('age');
             $table->string('email')->nullable();
             $table->string('password')->nullable();
+            $table->foreignId("book_id")->constrained()->onDelete("cascade")->onUpdate("cascade");
             $table->timestamps();
         });
     }
