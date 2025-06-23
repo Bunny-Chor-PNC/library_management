@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('tilte');
             $table->string('author');
             $table->foreignId("category_id")->constrained()->onDelete("cascade")->onUpdate("cascade");
+            $table->foreignId("librarian_id")->constrained()->onDelete("cascade")->onUpdate("cascade");
+            $table->foreignId("member_id")->constrained()->onDelete("cascade")->onUpdate("cascade");
             $table->timestamps();
         });
     }
