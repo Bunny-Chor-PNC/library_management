@@ -9,22 +9,25 @@ class Book extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['tilte', 'author'];
-    protected function librarian()
+    protected $fillable = ['title', 'author', 'librarian_id', 'category_id', 'member_id'];
+
+    public function librarian()
     {
         return $this->belongsTo(Librarian::class);
     }
-    protected function category()
+
+    public function category()
     {
         return $this->belongsTo(Category::class);
     }
-    protected function member()
+
+    public function member()
     {
         return $this->belongsTo(Member::class);
     }
-    protected function borrow()
+
+    public function borrow()
     {
         return $this->belongsTo(Borrow::class);
     }
-
 }
