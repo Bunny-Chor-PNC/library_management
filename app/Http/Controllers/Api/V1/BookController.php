@@ -18,6 +18,7 @@ class BookController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'author' => 'required|string|max:255',
+            'year' => 'required|integer|max:255',
             'librarian_id' => 'nullable|exists:librarians,id',
             'category_id' => 'nullable|exists:categories,id',
             'member_id' => 'nullable|exists:members,id',
@@ -46,6 +47,7 @@ class BookController extends Controller
         $validated = $request->validate([
             'title' => 'sometimes|required|string|max:255',
             'author' => 'sometimes|required|string|max:255',
+            'year' => 'sometimes|integer|max:255',
             'librarian_id' => 'nullable|exists:librarians,id',
             'category_id' => 'nullable|exists:categories,id',
             'member_id' => 'nullable|exists:members,id',

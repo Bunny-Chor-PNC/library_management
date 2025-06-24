@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->string('author');
+            $table->integer('year');
             $table->foreignId("category_id")->constrained()->onDelete("cascade")->onUpdate("cascade");
             $table->foreignId("librarian_id")->constrained()->onDelete("cascade")->onUpdate("cascade");
             $table->foreignId("member_id")->constrained()->onDelete("cascade")->onUpdate("cascade");
