@@ -1,47 +1,32 @@
 <?php
 
 namespace App\Http\Controllers\Api\V1;
+
 use App\Http\Controllers\Controller;
 use App\Models\Borrow;
-use Illuminate\Http\Request;
 use App\Http\Requests\BorrowRequest;
-use App\Http\Requests\BorrowUpdate;
 
 class BorrowController extends Controller
 {
     public function index()
     {
-        return response()->json(Borrow::all(), 200);
+        $borrows = Borrow::with(['member', 'librarian', 'book'])->get();
+        return response()->json($borrows);
     }
 
     public function store(BorrowRequest $request)
     {
-        $validated = $request->validate();
-
-        $borrow = Borrow::create($validated);
+        $data = $request->validated();
+        $borrow = Borrow::create($data);
+        $borrow->load(['member', 'librarian', 'book']);
         return response()->json($borrow, 201);
     }
-
-    public function show($id)
+    public function update(BorrowRequest $request, $id)
     {
-        $borrow = Borrow::with(['member', 'librarian', 'book'])->find($id);
-        if (!$borrow) {
-            return response()->json(['message' => 'Borrow not found'], 404);
-        }
-        return response()->json($borrow, 200);
-    }
-
-    public function update(BorrowUpdate $request, $id)
-    {
-        $borrow = Borrow::find($id);
-        if (!$borrow) {
-            return response()->json(['message' => 'Borrow not found'], 404);
-        }
-
-        $validated = $request->validate();
-
-        $borrow->update($validated);
-        return response()->json($borrow, 200);
+        $borrow = Borrow::findOrFail($id);
+        $borrow->update($request->validated());
+        $borrow->load(['member', 'librarian', 'book']);
+        return response()->json($borrow);
     }
 
     public function destroy($id)
@@ -52,11 +37,6 @@ class BorrowController extends Controller
         }
 
         $borrow->delete();
-        return response()->json(['message' => 'Borrow deleted'], 200);
-    }
-
-    public function getDataAllBorrows() {
-        $data = Borrow::with(['librarian', 'member', 'book'])->get();
-        return response()->json($data, 200);
+        return response()->json(['message' => 'Borrow deleted successfully'], 200);
     }
 }

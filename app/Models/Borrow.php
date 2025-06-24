@@ -7,10 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Borrow extends Model
 {
-    use HasFactory;
-
     protected $fillable = ['member_id', 'librarian_id', 'book_id'];
-    
+
     public function member()
     {
         return $this->belongsTo(Member::class);
