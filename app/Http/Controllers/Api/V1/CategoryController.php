@@ -5,7 +5,8 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
-
+use App\Http\Requests\CategoryRequest;
+use App\Http\Requests\CategoryUpdate;
 class CategoryController extends Controller
 {
     // List all categories
@@ -15,15 +16,15 @@ class CategoryController extends Controller
     }
 
     // Store a new category
-    public function store(Request $request)
+    public function store(CategoryRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-        ]);
+        $validated = $request->validated();
 
         $category = Category::create($validated);
-        return response()->json($category, 201);
+        return response()->json([
+            'message' => 'Category created successfully',
+            'data' => $category
+        ], 201);
     }
 
     // Show a specific category
@@ -37,17 +38,14 @@ class CategoryController extends Controller
     }
 
     // Update a category
-    public function update(Request $request, $id)
+    public function update(CategoryUpdate $request, $id)
     {
         $category = Category::find($id);
         if (!$category) {
             return response()->json(['message' => 'Category not found'], 404);
         }
 
-        $validated = $request->validate([
-            'name' => 'sometimes|required|string|max:255',
-            'description' => 'nullable|string',
-        ]);
+        $validated = $request->validate();
 
         $category->update($validated);
         return response()->json($category);

@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api\V1;
 use App\Models\Member;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\MemberUpdate;
+use App\Http\Requests\MemberRequest;
 
 class MemberController extends Controller
 {
@@ -15,14 +17,9 @@ class MemberController extends Controller
     }
 
     // POST /members
-    public function store(Request $request)
+    public function store(MemberRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'age' => 'nullable|integer',
-            'email' => 'required|email|unique:members,email',
-            'password' => 'required|string|min:6',
-        ]);
+        $validated = $request->validated();
 
         $member = Member::create($validated);
         return response()->json($member, 201);
@@ -39,19 +36,14 @@ class MemberController extends Controller
     }
 
     // PUT /members/{id}
-    public function update(Request $request, $id)
+    public function update(MemberUpdate $request, $id)
     {
         $member = Member::find($id);
         if (!$member) {
             return response()->json(['message' => 'Member not found'], 404);
         }
 
-        $validated = $request->validate([
-            'name' => 'sometimes|required|string|max:255',
-            'age' => 'nullable|integer',
-            'email' => 'sometimes|required|email|unique:members,email,' . $id,
-            'password' => 'sometimes|required|string|min:6',
-        ]);
+        $validated = $request->validated();
 
         $member->update($validated);
         return response()->json($member);

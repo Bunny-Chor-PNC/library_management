@@ -23,4 +23,16 @@ class Librarian extends Model
         return $this->hasMany(Borrow::class);
     }
 
+    public function getCreatedAtAttribute($value) {
+        return date('d-m-Y', strtotime($value));
+    }
+
+
+    public function getUpdatedAtAttribute($value) {
+        return date('F d, Y', strtotime($value));
+    }
+
+    public function getPriceAttribute($value) {
+        return '$' . $value;
+    }
 }

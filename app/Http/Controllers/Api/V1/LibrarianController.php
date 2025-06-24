@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Api\V1;
 use App\Models\Librarian;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\LibrarianRequest;
+use App\Http\Requests\LibrarianUpdate;
+
 class LibrarianController extends Controller
 {
     // List all librarians
@@ -14,14 +17,9 @@ class LibrarianController extends Controller
     }
 
     // Create a new librarian
-    public function store(Request $request)
+    public function store(LibrarianRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'age' => 'nullable|integer',
-            'email' => 'required|email|unique:librarians,email',
-            'password' => 'required|string|min:6',
-        ]);
+        $validated = $request->validate();
 
         $librarian = Librarian::create($validated);
 
@@ -39,19 +37,14 @@ class LibrarianController extends Controller
     }
 
     // Update librarian by id
-    public function update(Request $request, $id)
+    public function update(LibrarianUpdate $request, $id)
     {
         $librarian = Librarian::find($id);
         if (!$librarian) {
             return response()->json(['message' => 'Librarian not found'], 404);
         }
 
-        $validated = $request->validate([
-            'name' => 'sometimes|required|string|max:255',
-            'age' => 'nullable|integer',
-            'email' => 'sometimes|required|email|unique:librarians,email,' . $id,
-            'password' => 'sometimes|required|string|min:6',
-        ]);
+        $validated = $request->validate();
 
         $librarian->update($validated);
 
