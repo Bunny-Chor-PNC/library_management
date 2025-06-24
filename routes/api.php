@@ -20,8 +20,8 @@ Route::prefix('v1')->group(function () {
         'members' =>  MemberController::class,
         'books' => BookController::class,
         'borrows' => BorrowController::class
-    ]);
-    Route::get('data', [BookController::class, 'getDataAllBooks']);
+    ]);    
     Route::get('allborrow', [BorrowController::class, 'getDataAllBorrows']);
+    Route::get('/data', [BookController::class, 'fetchRelatedData']);
 });
 

@@ -1,8 +1,11 @@
 <?php
 
 namespace App\Http\Controllers\Api\V1;
-
+use Illuminate\Support\Facades\Log;
 use App\Models\Book;
+use App\Models\Librarian;
+use App\Models\Category;
+use App\Models\Member;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -10,7 +13,8 @@ class BookController extends Controller
 {
     public function index()
     {
-        return response()->json(Book::all(), 200);
+        $data = Book::with('librarian', 'category', 'member')->get();
+        return response()->json($data, 200);
     }
 
     public function store(Request $request)
@@ -18,7 +22,7 @@ class BookController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'author' => 'required|string|max:255',
-            'year' => 'required|integer|max:255',
+            'year' => 'required|integer|min:1000|max:' . date('Y'),
             'librarian_id' => 'nullable|exists:librarians,id',
             'category_id' => 'nullable|exists:categories,id',
             'member_id' => 'nullable|exists:members,id',
@@ -47,7 +51,7 @@ class BookController extends Controller
         $validated = $request->validate([
             'title' => 'sometimes|required|string|max:255',
             'author' => 'sometimes|required|string|max:255',
-            'year' => 'sometimes|integer|max:255',
+            'year' => 'sometimes|integer|min:1000|max:' . date('Y'),
             'librarian_id' => 'nullable|exists:librarians,id',
             'category_id' => 'nullable|exists:categories,id',
             'member_id' => 'nullable|exists:members,id',
@@ -68,8 +72,13 @@ class BookController extends Controller
         return response()->json(['message' => 'Book deleted']);
     }
 
-    public function getDataAllBooks() {
-        $data = Book::with('librarian', 'category', 'member')->get();
-        return response()->json($data, 200);
+    public function fetchRelatedData()
+    {
+        return response()->json([
+            'categories' =>Category::select('id', 'name')->get(),
+            'members' => Member::select('id', 'name')->get(),
+            'librarians' => Librarian::select('id', 'name')->get(),
+        ]);
     }
+
 }
