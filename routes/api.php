@@ -24,3 +24,4 @@ Route::prefix('v1')->group(function () {
     Route::get('data', [BookController::class, 'getDataAllBooks']);
     Route::get('allborrow', [BorrowController::class, 'getDataAllBorrows']);
 });
+
